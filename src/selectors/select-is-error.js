@@ -1,0 +1,1 @@
+export const selectIsError = (state) => state.interactionState.isError
