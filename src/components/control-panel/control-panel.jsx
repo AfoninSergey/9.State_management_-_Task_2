@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createFetchTask } from '../../api';
-import { createTask, sortTasks, filterTasks, debounce } from '../../utils';
+import { sortTasks, filterTasks, debounce } from '../../utils';
 
 import { Input } from '../input/Input';
 import { Button } from '../button/button';
@@ -9,11 +9,11 @@ import styles from './control-panel.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectIsFilteringEnabled, selectTaskList } from '../../selectors';
 import {
+	addNewTaskAction,
 	setIsButtonDisabledAction,
 	setIsErrorAction,
 	setIsFilteringEnabledAction,
 	setSortedAndFilteredTasksListAction,
-	setTasksListAction,
 } from '../../actions';
 
 export const Controlpanel = () => {
@@ -44,8 +44,7 @@ export const Controlpanel = () => {
 		dispatch(setIsButtonDisabledAction(true));
 		createFetchTask(newTaskValue)
 			.then(({ id }) => {
-				const ubdatedTaskList = createTask(taskList, id, newTaskValue);
-				dispatch(setTasksListAction(ubdatedTaskList));
+				dispatch(addNewTaskAction(id, newTaskValue))
 			})
 			.catch(() => dispatch(setIsErrorAction(true)))
 			.finally(() => {

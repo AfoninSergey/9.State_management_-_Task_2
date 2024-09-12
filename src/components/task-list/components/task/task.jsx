@@ -2,19 +2,17 @@ import { useState } from 'react';
 import { Input } from '../../../input/Input';
 import { Button } from '../../../button/button';
 import { updateFetchTask, deleteFetchTask } from '../../../../api';
-import { deleteTask, updateTask } from '../../../../utils';
 import styles from './task.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTaskList } from '../../../../selectors';
+import { useDispatch } from 'react-redux';
 import {
+	deleteTaskAction,
 	setIsButtonDisabledAction,
 	setIsErrorAction,
-	setTasksListAction,
+	updateTaskAction,
 } from '../../../../actions';
 
 export const Task = ({ id, title }) => {
 	const dispatch = useDispatch();
-	const taskList = useSelector(selectTaskList);
 
 	const [newTitle, setNewTitle] = useState('');
 	const [isEditing, setIsEditing] = useState(false);
@@ -38,9 +36,7 @@ export const Task = ({ id, title }) => {
 		}
 
 		if (isEditing) {
-
 			if (newTitle.trim().length === 0 || newTitle === title) {
-				// dispatch(setTasksListAction(taskList));
 				setIsInputEmpty(false);
 				setNewTitle(title);
 				setTimeout(() => {
@@ -52,8 +48,7 @@ export const Task = ({ id, title }) => {
 			dispatch(setIsButtonDisabledAction(true));
 			updateFetchTask(id, newTitle)
 				.then(() => {
-					const ubdatedTaskList = updateTask(taskList, id, newTitle);
-					dispatch(setTasksListAction(ubdatedTaskList));
+					dispatch(updateTaskAction(id, newTitle));
 					setNewTitle('');
 				})
 				.catch(() => dispatch(setIsErrorAction(true)))
@@ -62,14 +57,11 @@ export const Task = ({ id, title }) => {
 	};
 
 	const onTaskDelete = () => {
-
-
 		if (!isEditing) {
 			dispatch(setIsButtonDisabledAction(true));
 			deleteFetchTask(id)
 				.then(() => {
-					const ubdatedTaskList = deleteTask(taskList, id);
-					dispatch(setTasksListAction(ubdatedTaskList));
+					dispatch(deleteTaskAction(id));
 				})
 				.catch(() => dispatch(setIsErrorAction(true)))
 				.finally(() => dispatch(setIsButtonDisabledAction(false)));
@@ -77,8 +69,6 @@ export const Task = ({ id, title }) => {
 			setIsInputEmpty(false);
 			setNewTitle('');
 			setIsEditing(false);
-			// dispatch(setIsButtonDisabledAction(false));
-			// dispatch(setTasksListAction(taskList));
 		}
 	};
 
