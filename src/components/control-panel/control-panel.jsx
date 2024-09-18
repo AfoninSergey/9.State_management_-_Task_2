@@ -1,17 +1,12 @@
 import { useState } from 'react';
-import { createFetchTask } from '../../api';
 import { sortTasks, filterTasks, debounce } from '../../utils';
-
 import { Input } from '../input/Input';
 import { Button } from '../button/button';
-
 import styles from './control-panel.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectIsFilteringEnabled, selectTaskList } from '../../selectors';
 import {
 	addNewTaskAction,
-	setIsButtonDisabledAction,
-	setIsErrorAction,
 	setIsFilteringEnabledAction,
 	setSortedAndFilteredTasksListAction,
 } from '../../actions';
@@ -41,16 +36,8 @@ export const Controlpanel = () => {
 			return;
 		}
 
-		dispatch(setIsButtonDisabledAction(true));
-		createFetchTask(newTaskValue)
-			.then(({ id }) => {
-				dispatch(addNewTaskAction(id, newTaskValue))
-			})
-			.catch(() => dispatch(setIsErrorAction(true)))
-			.finally(() => {
-				dispatch(setIsButtonDisabledAction(false));
-				setNewtaskValue('');
-			});
+		dispatch(addNewTaskAction(newTaskValue, setNewtaskValue))
+		// .then(() => setNewtaskValue('')) не уверен как правильно, тут обнрулить newTaskValue или передать в Экшен
 	};
 
 	const onFilterTaskList = (value) => {

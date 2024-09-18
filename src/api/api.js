@@ -1,4 +1,4 @@
-const fetchServer = (method, id, title) => {
+const fetchServer = async (method, id, title) => {
 	const url =
 		id !== undefined
 			? `http://localhost:3003/todos/${id}`

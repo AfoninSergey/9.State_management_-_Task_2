@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { Input } from '../../../input/Input';
 import { Button } from '../../../button/button';
-import { updateFetchTask, deleteFetchTask } from '../../../../api';
 import styles from './task.module.css';
 import { useDispatch } from 'react-redux';
 import {
 	deleteTaskAction,
-	setIsButtonDisabledAction,
-	setIsErrorAction,
 	updateTaskAction,
 } from '../../../../actions';
 
@@ -45,26 +42,14 @@ export const Task = ({ id, title }) => {
 				return;
 			}
 
-			dispatch(setIsButtonDisabledAction(true));
-			updateFetchTask(id, newTitle)
-				.then(() => {
-					dispatch(updateTaskAction(id, newTitle));
-					setNewTitle('');
-				})
-				.catch(() => dispatch(setIsErrorAction(true)))
-				.finally(() => dispatch(setIsButtonDisabledAction(false)));
+			dispatch(updateTaskAction(id, newTitle, setNewTitle))
+			// .then(() => setNewTitle('')) не уверен как правильно, тут обнрулить newTitle или передать в Экшен
 		}
 	};
 
 	const onTaskDelete = () => {
 		if (!isEditing) {
-			dispatch(setIsButtonDisabledAction(true));
-			deleteFetchTask(id)
-				.then(() => {
-					dispatch(deleteTaskAction(id));
-				})
-				.catch(() => dispatch(setIsErrorAction(true)))
-				.finally(() => dispatch(setIsButtonDisabledAction(false)));
+			dispatch(deleteTaskAction(id))
 		} else {
 			setIsInputEmpty(false);
 			setNewTitle('');
